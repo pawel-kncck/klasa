@@ -54,32 +54,8 @@
       box-shadow:
         0 0 0 14px #c2a14e,
         0 0 0 22px #9c7d33,
-        0 30px 70px rgba(0,0,0,0.75),
-        0 0 90px 30px rgba(120,170,255,0.35),
-        0 0 160px 60px rgba(255,225,150,0.25),
+        0 30px 70px rgba(0,0,0,0.8),
         inset 0 0 40px rgba(0,0,0,0.12);
-      animation: halo 5s ease-in-out infinite;
-    }
-
-    @keyframes halo {
-      0%, 100% {
-        box-shadow:
-          0 0 0 14px #c2a14e,
-          0 0 0 22px #9c7d33,
-          0 30px 70px rgba(0,0,0,0.75),
-          0 0 90px 30px rgba(120,170,255,0.35),
-          0 0 160px 60px rgba(255,225,150,0.25),
-          inset 0 0 40px rgba(0,0,0,0.12);
-      }
-      50% {
-        box-shadow:
-          0 0 0 14px #c2a14e,
-          0 0 0 22px #9c7d33,
-          0 30px 70px rgba(0,0,0,0.75),
-          0 0 120px 45px rgba(120,170,255,0.5),
-          0 0 200px 80px rgba(255,225,150,0.35),
-          inset 0 0 40px rgba(0,0,0,0.12);
-      }
     }
 
     /* Hour & minute tick marks */
@@ -180,9 +156,32 @@
       color: #aebbd6;
       text-shadow: 0 0 18px rgba(120,160,255,0.4);
     }
+
+    .label {
+      display: block;
+      width: min(92vw, 720px);
+      height: auto;
+    }
   </style>
 </head>
 <body>
+  <!-- Napis SVG: Klasa 4C -->
+  <svg class="label" viewBox="0 0 720 130" role="img" aria-label="Klasa 4C">
+    <defs>
+      <linearGradient id="gradKlasa" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="#fff7d6"/>
+        <stop offset="100%" stop-color="#f2c14e"/>
+      </linearGradient>
+    </defs>
+    <text x="360" y="92" text-anchor="middle"
+          font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="96" font-weight="800" letter-spacing="2"
+          fill="url(#gradKlasa)"
+          stroke="#3a2c08" stroke-width="3"
+          paint-order="stroke"
+          style="filter: drop-shadow(0 4px 10px rgba(0,0,0,0.7));">Klasa 4C</text>
+  </svg>
+
   <div class="clock" id="clock">
     <div class="hand hour"   id="hour"></div>
     <div class="hand minute" id="minute"></div>
@@ -190,6 +189,23 @@
     <div class="cap"></div>
   </div>
   <div class="digital" id="digital">--:--:--</div>
+
+  <!-- Napis SVG: Dzień Dziecka -->
+  <svg class="label" viewBox="0 0 720 130" role="img" aria-label="Dzień Dziecka">
+    <defs>
+      <linearGradient id="gradDzien" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="#bfe3ff"/>
+        <stop offset="100%" stop-color="#4aa3ff"/>
+      </linearGradient>
+    </defs>
+    <text x="360" y="92" text-anchor="middle"
+          font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="80" font-weight="800" letter-spacing="2"
+          fill="url(#gradDzien)"
+          stroke="#0a2540" stroke-width="3"
+          paint-order="stroke"
+          style="filter: drop-shadow(0 4px 10px rgba(0,0,0,0.7));">Dzień Dziecka</text>
+  </svg>
 
   <script>
     const clock = document.getElementById("clock");
