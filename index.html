@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zegar wskazówkowy</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      background: radial-gradient(circle at 50% 30%, #1b2a4a 0%, #0a0f1e 70%);
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: #e8eefc;
+      overflow: hidden;
+    }
+
+    .clock {
+      position: relative;
+      width: min(80vmin, 560px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 35%, #fdfdfd 0%, #e9edf5 60%, #cfd6e4 100%);
+      box-shadow:
+        0 0 0 14px #c2a14e,
+        0 0 0 22px #9c7d33,
+        0 30px 70px rgba(0,0,0,0.6),
+        inset 0 0 40px rgba(0,0,0,0.12);
+    }
+
+    /* Hour & minute tick marks */
+    .tick {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 2px;
+      height: 50%;
+      transform-origin: bottom center;
+    }
+    .tick::before {
+      content: "";
+      position: absolute;
+      top: 3%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 4%;
+      background: #6b7280;
+      border-radius: 2px;
+    }
+    .tick.hour::before {
+      width: 5px;
+      height: 7%;
+      background: #1f2937;
+    }
+
+    /* Numbers */
+    .number {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      font-size: clamp(1.3rem, 5vmin, 2.4rem);
+      font-weight: 700;
+      color: #1f2937;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Hands */
+    .hand {
+      position: absolute;
+      left: 50%;
+      bottom: 50%;
+      transform-origin: bottom center;
+      border-radius: 8px;
+      z-index: 5;
+    }
+    .hand.hour {
+      width: 12px;
+      height: 26%;
+      margin-left: -6px;
+      background: linear-gradient(#111827, #374151);
+    }
+    .hand.minute {
+      width: 8px;
+      height: 38%;
+      margin-left: -4px;
+      background: linear-gradient(#1f2937, #4b5563);
+    }
+    .hand.second {
+      width: 3px;
+      height: 44%;
+      margin-left: -1.5px;
+      background: #dc2626;
+      z-index: 6;
+    }
+    .hand.second::after {
+      content: "";
+      position: absolute;
+      bottom: -16%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 16%;
+      background: #dc2626;
+      border-radius: 4px;
+    }
+
+    .cap {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 22px;
+      height: 22px;
+      background: radial-gradient(circle, #dc2626 40%, #7f1d1d 100%);
+      border: 3px solid #1f2937;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 7;
+    }
+
+    .digital {
+      font-size: clamp(1.4rem, 6vmin, 2.6rem);
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      font-variant-numeric: tabular-nums;
+      color: #aebbd6;
+      text-shadow: 0 0 18px rgba(120,160,255,0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="clock" id="clock">
+    <div class="hand hour"   id="hour"></div>
+    <div class="hand minute" id="minute"></div>
+    <div class="hand second" id="second"></div>
+    <div class="cap"></div>
+  </div>
+  <div class="digital" id="digital">--:--:--</div>
+
+  <script>
+    const clock = document.getElementById("clock");
+
+    // Build 60 tick marks (every 5th is an "hour" tick)
+    for (let i = 0; i < 60; i++) {
+      const tick = document.createElement("div");
+      tick.className = "tick" + (i % 5 === 0 ? " hour" : "");
+      tick.style.transform = `rotate(${i * 6}deg)`;
+      clock.appendChild(tick);
+    }
+
+    // Build numbers 1..12 around the dial
+    const radius = 41; // % from center
+    for (let n = 1; n <= 12; n++) {
+      const angle = (n * 30 - 90) * Math.PI / 180;
+      const el = document.createElement("div");
+      el.className = "number";
+      el.textContent = n;
+      el.style.left = `${50 + radius * Math.cos(angle)}%`;
+      el.style.top  = `${50 + radius * Math.sin(angle)}%`;
+      clock.appendChild(el);
+    }
+
+    const hourHand = document.getElementById("hour");
+    const minuteHand = document.getElementById("minute");
+    const secondHand = document.getElementById("second");
+    const digital = document.getElementById("digital");
+
+    function tick() {
+      const now = new Date();
+      const ms = now.getMilliseconds();
+      const s = now.getSeconds() + ms / 1000;
+      const m = now.getMinutes() + s / 60;
+      const h = (now.getHours() % 12) + m / 60;
+
+      hourHand.style.transform   = `rotate(${h * 30}deg)`;
+      minuteHand.style.transform = `rotate(${m * 6}deg)`;
+      secondHand.style.transform = `rotate(${s * 6}deg)`;
+
+      const pad = (x) => String(x).padStart(2, "0");
+      digital.textContent =
+        `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+      requestAnimationFrame(tick);
+    }
+    tick();
+  </script>
+</body>
+</html>
